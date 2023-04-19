@@ -1,0 +1,38 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Class {
+  id        String    @id @default(uuid())
+  name      String    
+  stream    Stream
+  createdAt DateTime  @default(now())
+  updatedAt DateTime? @updatedAt
+  students  Student[]
+
+  @@unique([name, stream])
+}
+
+model Student {
+  id          String    @id @default(uuid())
+  name        String
+  dateOfBirth DateTime
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime? @updatedAt
+  classId     String
+  class       Class     @relation(fields: [classId], references: [id])
+}
+
+enum Stream {
+  A
+  B
+  C
+}
